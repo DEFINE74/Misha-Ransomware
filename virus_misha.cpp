@@ -19,7 +19,6 @@ string XOREncryptDecrypt(const string& input, const string& originalKey) {
     size_t seed = hash_fn(originalKey);
     for (size_t i = 0; i < input.size(); ++i) {
         output[i] = input[i] ^ static_cast<unsigned char>(seed & 0xFF);
-        // Update seed for next byte
         seed = hash_fn(to_string(seed));
     }
     return output;
