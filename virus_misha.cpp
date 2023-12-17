@@ -13,6 +13,7 @@ using namespace std::filesystem;
 
 
 const string ultimateKey = "Mischa23";
+const string folderPath = "hey";
 
 string XOREncryptDecrypt(const string& input, const string& originalKey) {
     string output = input;
@@ -54,12 +55,45 @@ void processFilesInDirectory(const string& directory, const string& password) {
         }
     }
 }
+
+void CheckFolderFiles()
+{
+    bool txtFilesExist = false, keyPressed = false;
+
+    if (!exists(folderPath)) {
+        while (!keyPressed) {
+            cerr << "FATAL: There is nothing to encrypt." << endl;
+            cout << "\n\n(PRESS ANY KEY)";
+            Sleep(150);
+            system("cls");
+            Sleep(150);
+
+            if (_kbhit()) {
+                break;
+            }
+        }
+        exit(1);
+    }
+    if (!txtFilesExist) {
+        while (!keyPressed) {
+            cerr << "FATAL: There is nothing to encrypt." << endl;
+            cout << "\n\n(PRESS ANY KEY)";
+            Sleep(150);
+            system("cls");
+            Sleep(150);
+
+            if (_kbhit()) {
+                break;
+            }
+        }
+        exit(1);
+    }
+}
 void StartMessage()
 {
-    
-    const string folderPath = "hey";
+    CheckFolderFiles();
     bool keyPressed = false;
-    int fileCount = distance(directory_iterator(folderPath), directory_iterator{});
+    int fileCount = 0;
     int currentFileIndex = 0;
 
     try {
@@ -67,6 +101,7 @@ void StartMessage()
         for (const auto& entry : directory_iterator(folderPath)) {
             if (entry.path().extension() == ".txt") {
                 txtFilesExist = true;
+                fileCount++;
                 break;
             }
         }
@@ -85,6 +120,7 @@ void StartMessage()
             }
             exit(1);
         }
+
         for (const auto& entry : directory_iterator(folderPath)) {
             if (entry.path().extension() == ".txt") {
                 const string filePath = entry.path().string();
@@ -111,7 +147,6 @@ void StartMessage()
                 outputFile.close();
 
                 currentFileIndex++;
-                
             }
         }
 
@@ -130,7 +165,7 @@ void StartMessage()
                 int sectorPercent = (sector * 100) / fileCount;
                 string newLine = "\rCHKDSK is repairing sector " + to_string(sector) + " of " + to_string(fileCount) + " (" + to_string(sectorPercent) + "%)";
                 cout << newLine;
-                Sleep(100); 
+                Sleep(100);
             }
         }
     }
@@ -149,6 +184,7 @@ void StartMessage()
         exit(1);
     }
 }
+
 void SkullScreen()
 {
     cout << endl << endl;
@@ -242,14 +278,65 @@ void EncryptedMessage()
         SendMessage(HWND_BROADCAST, WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM)-1);
     }
 }
-void DescryptingSystem()
+void DecryptingSystem()
 {
     const string folderPath = "hey";
+    bool keyPressed = false;
     int fileCount = distance(directory_iterator(folderPath), directory_iterator{});
     int currentFileIndex = 0;
 
     try 
     {
+        bool txtFilesExist = false;
+        if (!exists(folderPath)) {
+            while (!keyPressed) {
+                cerr << "FATAL: There is nothing to encrypt." << endl;
+                cout << "\n\n(PRESS ANY KEY)";
+                Sleep(150);
+                system("cls");
+                Sleep(150);
+
+                if (_kbhit()) {
+                    break;
+                }
+            }
+            exit(1);
+        }
+        if (!txtFilesExist) {
+            while (!keyPressed) {
+                cerr << "FATAL: There is nothing to encrypt." << endl;
+                cout << "\n\n(PRESS ANY KEY)";
+                Sleep(150);
+                system("cls");
+                Sleep(150);
+
+                if (_kbhit()) {
+                    break;
+                }
+            }
+            exit(1);
+        }
+        for (const auto& entry : directory_iterator(folderPath)) {
+            if (entry.path().extension() == ".txt") {
+                txtFilesExist = true;
+                break;
+            }
+        }
+
+        if (!txtFilesExist) {
+            while (!keyPressed) {
+                cerr << "FATAL: There is nothing to encrypt." << endl;
+                cout << "\n\n(PRESS ANY KEY)";
+                Sleep(150);
+                system("cls");
+                Sleep(150);
+
+                if (_kbhit()) {
+                    break;
+                }
+            }
+            exit(1);
+        }
         for (const auto& entry : directory_iterator(folderPath)) 
         {
             if (entry.path().extension() == ".txt") 
@@ -293,7 +380,7 @@ void DescryptingSystem()
         }
     }
     catch (const filesystem_error& ex) {
-        bool keyPressed = false;
+        
         while (!keyPressed) {
             cerr << "FATAL: There is nothing to decrypt." << endl;
             cout << "\n\n(PRESS ANY KEY)";
@@ -334,7 +421,7 @@ int main()
     StartMessage();
     SkullScreenFlicker();
     EncryptedMessage();
-    DescryptingSystem();
+    DecryptingSystem();
     EndScreen();
     return 0;
 }
